@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
@@ -19,8 +20,15 @@ if(process.env.NODE_ENV === 'development'){
 app.engine('.hbs', exphbs.engine({ defaultLayout: 'main', extname: '.hbs'}))
 app.set('view engine', '.hbs')
 
+// static folder
+app.use(express.static(path.join(__dirname, 'public')))
+
+
+// routes
+app.use('/', require('./routes/index'))
+
+
+
 const PORT = process.env.PORT || 8080
-
-
 
 app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`))
