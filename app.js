@@ -29,8 +29,15 @@ if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'))
 }
 
+// handlebar helper
+const {formatDate, stripTags, truncate, editIcon, select } = require('./helpers/hbs')
+
 // handlebars - set view engine
-app.engine('.hbs', exphbs.engine({ defaultLayout: 'main', extname: '.hbs'}))
+app.engine('.hbs', exphbs.engine({ 
+    helpers:{ formatDate, stripTags, truncate, editIcon, select }, 
+    defaultLayout: 'main', 
+    extname: '.hbs'
+}))
 app.set('view engine', '.hbs')
 
 // sessions
@@ -45,6 +52,13 @@ app.use(session({
 // passport middleware
 app.use(passport.initialize())
 app.use(passport.session())
+
+// set global variable
+app.use(function(req,res,next) {
+    res.locals.user = req.user || null
+    next()
+})
+
 // static folder
 app.use(express.static(path.join(__dirname, 'public')))
 
